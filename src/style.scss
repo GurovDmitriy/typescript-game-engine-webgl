@@ -1,10 +1,35 @@
+@import "../node_modules/normalize.css/normalize.css";
+
+html {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 400px;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+*,
+*::after,
+*::before {
+  box-sizing: inherit;
+}
+
 body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 400px;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+
   background: #ffffff;
 }
 
 .canvas {
-  width: 1000px;
-  height: 600px;
-
-  border: 2px solid #000000;
+  flex-grow: 1;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
