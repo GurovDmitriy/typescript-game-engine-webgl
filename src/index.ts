@@ -6,7 +6,7 @@ import TSE from "./TSE"
 
 window.onload = function () {
   const engine = new TSE.Engine()
-  // engine.start()
+  engine.start()
 }
 
 export {}

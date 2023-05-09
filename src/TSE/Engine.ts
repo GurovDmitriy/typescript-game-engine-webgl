@@ -1,8 +1,10 @@
+import { gl, GLUtilities } from "./GLUtilities"
+
 /**
  * The main game engine class
  */
 export class Engine {
-  private _count = 0
+  private _canvas: HTMLCanvasElement
 
   /**
    *  Create a new engine
@@ -15,13 +17,15 @@ export class Engine {
    * Starts up this engine
    */
   public start() {
+    this._canvas = GLUtilities.initialize("canvas")
+
+    gl.clearColor(0, 0, 0, 1)
+
     this.loop()
   }
 
   private loop() {
-    this._count += 1
-
-    document.title = this._count.toString()
+    gl.clear(gl.COLOR_BUFFER_BIT)
 
     requestAnimationFrame(this.loop.bind(this))
   }
