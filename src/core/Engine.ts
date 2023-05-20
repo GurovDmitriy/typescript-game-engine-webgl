@@ -1,4 +1,5 @@
-import { gl, GLUtilities } from "./gl/GLUtilities"
+import { AttributeInfo, GLBuffer } from "./gl/GLBuffer"
+import { GLUtilities, gl } from "./gl/GLUtilities"
 import { Shader } from "./gl/shader"
 
 /**
@@ -8,7 +9,7 @@ export class Engine {
   private _canvas: HTMLCanvasElement
   private _shader: Shader
 
-  private _buffer: WebGLBuffer
+  private _buffer: GLBuffer
 
   /**
    *  Create a new engine
@@ -49,31 +50,33 @@ export class Engine {
   private loop() {
     gl.clear(gl.COLOR_BUFFER_BIT)
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this._buffer)
-    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0)
-    gl.enableVertexAttribArray(0)
+    const colorPosition = this._shader.getUniformLocation("u_color")
+    gl.uniform4f(colorPosition, 1, 0.5, 0, 1)
 
-    gl.drawArrays(gl.TRIANGLES, 0, 3)
+    this._buffer.bind()
+    this._buffer.draw()
 
     requestAnimationFrame(this.loop.bind(this))
   }
 
   private createBuffer() {
-    this._buffer = gl.createBuffer()
+    this._buffer = new GLBuffer(3)
+
+    const positionAttribute = new AttributeInfo()
+
+    positionAttribute.location = this._shader.getAttributeLocation("a_position")
+    positionAttribute.offset = 0
+    positionAttribute.size = 3
+    this._buffer.addAttributeLocation(positionAttribute)
 
     const vertices = [
       // x, y, z
       0, 0, 0, 0, 0.5, 0, 0.5, 0.5, 0,
     ]
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this._buffer)
-    gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0)
-    gl.enableVertexAttribArray(0)
-
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW)
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, undefined)
-    gl.disableVertexAttribArray(0)
+    this._buffer.pushBackData(vertices)
+    this._buffer.upload()
+    this._buffer.unbind()
   }
 
   private loadShaders() {
@@ -87,8 +90,10 @@ export class Engine {
     const fragmentShaderSource = `
     precision mediump float;
 
+    uniform vec4 u_color;
+
     void main() {
-      gl_FragColor = vec4(1.0);
+      gl_FragColor = u_color;
     }`
 
     this._shader = new Shader("basic", vertexShaderSource, fragmentShaderSource)
