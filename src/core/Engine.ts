@@ -15,6 +15,7 @@ export class Engine {
    *  Create a new engine
    */
   public constructor() {
+    console.log("testte")
     console.log("Create a new engine")
   }
 
@@ -25,6 +26,8 @@ export class Engine {
     this._canvas = GLUtilities.initialize("canvas")
 
     gl.clearColor(0, 0, 0, 1)
+
+    console.log("test")
 
     this.loadShaders()
     this._shader.use()
@@ -63,6 +66,8 @@ export class Engine {
     this._buffer = new GLBuffer(3)
 
     const positionAttribute = new AttributeInfo()
+
+    console.log("tessst")
 
     positionAttribute.location = this._shader.getAttributeLocation("a_position")
     positionAttribute.offset = 0
